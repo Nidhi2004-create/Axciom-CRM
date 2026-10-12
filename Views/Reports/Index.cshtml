@@ -1,0 +1,198 @@
+@model AcxiomCRM.ViewModels.ReportsHubViewModel
+@{
+    ViewData["Title"] = "Reports & Analytics Center";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Executive Reports &amp; Analytics</h3>
+        <p class="text-muted small mb-0">Cross-module CRM reporting, conversion analytics, pipeline forecasting and CSV export center.</p>
+    </div>
+</div>
+
+<!-- Quick High-Level Metrics -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="crm-card crm-kpi-card">
+            <div>
+                <span class="text-muted small text-uppercase fw-semibold d-block">Lead Conversion</span>
+                <h3 class="fw-bold text-success mb-0">@Model.ConversionRate%</h3>
+                <span class="small text-muted">@Model.ConvertedLeads of @Model.TotalLeads converted</span>
+            </div>
+            <div class="crm-kpi-icon badge-soft-success"><i class="bi bi-funnel-fill"></i></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="crm-card crm-kpi-card">
+            <div>
+                <span class="text-muted small text-uppercase fw-semibold d-block">Open Pipeline</span>
+                <h3 class="fw-bold text-primary mb-0">₹@Model.TotalPipelineValue.ToString("N0")</h3>
+                <span class="small text-muted">Active commercial deals</span>
+            </div>
+            <div class="crm-kpi-icon badge-soft-primary"><i class="bi bi-currency-rupee"></i></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="crm-card crm-kpi-card">
+            <div>
+                <span class="text-muted small text-uppercase fw-semibold d-block">Weighted Forecast</span>
+                <h3 class="fw-bold text-info mb-0">₹@Model.TotalWeightedPipelineValue.ToString("N0")</h3>
+                <span class="small text-muted">Probability-adjusted</span>
+            </div>
+            <div class="crm-kpi-icon badge-soft-info"><i class="bi bi-graph-up"></i></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="crm-card crm-kpi-card">
+            <div>
+                <span class="text-muted small text-uppercase fw-semibold d-block">Completed Follow-Ups</span>
+                <h3 class="fw-bold text-dark mb-0">@Model.CompletedFollowUps</h3>
+                <span class="small text-muted">Touchpoints delivered</span>
+            </div>
+            <div class="crm-kpi-icon badge-soft-warning"><i class="bi bi-check2-circle"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- 8 Reports Directory Grid (PDF Page 6, 11) -->
+<h5 class="fw-bold mb-3 text-secondary">Standard CRM Reports</h5>
+<div class="row g-3">
+    <!-- 1. Customer Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-primary fs-5 p-2"><i class="bi bi-people-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Customer Report</h6>
+                </div>
+                <p class="small text-muted">Customer directory, status distribution, ownership mapping and creation dates.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="CustomerReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="CustomerReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Lead Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-info fs-5 p-2"><i class="bi bi-funnel-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Lead Report</h6>
+                </div>
+                <p class="small text-muted">Lead sources, conversion stages, contact details and expected commercial values.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="LeadReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="LeadReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Follow-Up Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-warning fs-5 p-2"><i class="bi bi-calendar-check-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Follow-Up Report</h6>
+                </div>
+                <p class="small text-muted">Scheduled, completed, missed and overdue client communication activities.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="FollowUpReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="FollowUpReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Opportunity Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-success fs-5 p-2"><i class="bi bi-briefcase-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Opportunity Report</h6>
+                </div>
+                <p class="small text-muted">Pipeline deals by stage, amount, probability and expected close milestones.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="OpportunityReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="OpportunityReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Pipeline Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-primary fs-5 p-2"><i class="bi bi-layers-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Pipeline Report</h6>
+                </div>
+                <p class="small text-muted">Stage-wise and owner-wise pipeline aggregates and weighted deal amounts.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="PipelineReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="PipelineReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Sales / Conversion Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-success fs-5 p-2"><i class="bi bi-trophy-fill"></i></span>
+                    <h6 class="fw-bold mb-0">Sales &amp; Conversion</h6>
+                </div>
+                <p class="small text-muted">Lead qualification conversion rates, win/loss ratios and realized revenues.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="ConversionReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="ConversionReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. User Activity Report -->
+    <div class="col-md-6 col-lg-3">
+        <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge badge-soft-secondary fs-5 p-2"><i class="bi bi-person-lines-fill"></i></span>
+                    <h6 class="fw-bold mb-0">User Activity Report</h6>
+                </div>
+                <p class="small text-muted">Calls made, meetings held, emails transmitted and completed user workloads.</p>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="UserActivityReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                <a asp-action="UserActivityReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <!-- 8. Audit Report -->
+        <div class="col-md-6 col-lg-3">
+            <div class="crm-card p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge badge-soft-danger fs-5 p-2"><i class="bi bi-shield-lock-fill"></i></span>
+                        <h6 class="fw-bold mb-0">Audit Report</h6>
+                    </div>
+                    <p class="small text-muted">Security and business operations history, authentication checks and role changes.</p>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <a asp-action="AuditReport" class="btn btn-primary btn-sm flex-grow-1">View Report</a>
+                    <a asp-action="AuditReport" asp-route-export="true" class="btn btn-outline-secondary btn-sm" title="Export CSV"><i class="bi bi-download"></i></a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

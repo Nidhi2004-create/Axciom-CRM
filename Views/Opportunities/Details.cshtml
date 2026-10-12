@@ -1,0 +1,128 @@
+@model AcxiomCRM.Models.Opportunity
+@{
+    ViewData["Title"] = "Opportunity Details - " + Model.OpportunityName;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h3 class="fw-bold mb-0">@Model.OpportunityName</h3>
+            @if (Model.Stage == "Won")
+            {
+                <span class="badge badge-soft-success px-3 py-1"><i class="bi bi-check-circle me-1"></i>Closed Won</span>
+            }
+            else if (Model.Stage == "Lost")
+            {
+                <span class="badge badge-soft-danger px-3 py-1"><i class="bi bi-x-circle me-1"></i>Closed Lost</span>
+            }
+            else
+            {
+                <span class="badge badge-soft-primary px-3 py-1">@Model.Stage</span>
+            }
+        </div>
+        <p class="text-muted small mb-0">
+            Account: <strong>@Model.Customer?.CustomerName</strong> &bull; Created @Model.CreatedDate.ToString("dd MMM yyyy")
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.OpportunityId" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Deal
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Opportunities
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <!-- Deal Financials Card -->
+        <div class="crm-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin text-primary me-2"></i>Financial Forecast</h5>
+            <div class="p-3 bg-light rounded-3 mb-3">
+                <span class="text-muted small d-block">Contract Value</span>
+                <h3 class="fw-bold text-primary mb-0">₹@Model.Amount.ToString("N0")</h3>
+            </div>
+            <div class="p-3 bg-light rounded-3 mb-3">
+                <span class="text-muted small d-block">Weighted Pipeline (Probability: @Model.Probability%)</span>
+                <h3 class="fw-bold text-success mb-0">₹@Model.WeightedAmount.ToString("N0")</h3>
+            </div>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                <li>
+                    <span class="text-muted small d-block">Customer</span>
+                    <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.CustomerId" class="fw-semibold text-decoration-none">
+                        <i class="bi bi-building me-1"></i>@Model.Customer?.CustomerName
+                    </a>
+                </li>
+                @if (Model.Lead != null)
+                {
+                    <li>
+                        <span class="text-muted small d-block">Originated from Lead</span>
+                        <a asp-controller="Leads" asp-action="Details" asp-route-id="@Model.LeadId" class="fw-semibold text-decoration-none">
+                            <i class="bi bi-funnel me-1"></i>@Model.Lead?.LeadName (@Model.Lead?.LeadCode)
+                        </a>
+                    </li>
+                }
+                <li>
+                    <span class="text-muted small d-block">Expected Close Date</span>
+                    <span class="fw-semibold"><i class="bi bi-calendar-event me-1"></i>@Model.ExpectedCloseDate.ToString("dd MMMM yyyy")</span>
+                </li>
+                <li>
+                    <span class="text-muted small d-block">Deal Owner</span>
+                    <span class="badge badge-soft-primary px-2 py-1">
+                        <i class="bi bi-person me-1"></i>@(Model.AssignedToUser?.FullName ?? "Unassigned")
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <!-- Notes & Related Followups -->
+        <div class="crm-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-file-text text-primary me-2"></i>Commercial Notes</h5>
+            <div class="p-3 bg-white border rounded-3">
+                <p class="mb-0 text-secondary">@(string.IsNullOrWhiteSpace(Model.Notes) ? "No notes recorded." : Model.Notes)</p>
+            </div>
+        </div>
+
+        <div class="crm-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check text-primary me-2"></i>Follow-Ups for this Opportunity</h5>
+                <a asp-controller="FollowUps" asp-action="Create" asp-route-customerId="@Model.CustomerId" asp-route-opportunityId="@Model.OpportunityId" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus me-1"></i> Schedule Follow-Up
+                </a>
+            </div>
+            @if (Model.FollowUps.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Scheduled Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var f in Model.FollowUps)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@f.Subject</td>
+                                    <td><span class="badge bg-light text-dark border">@f.FollowUpType</span></td>
+                                    <td>@f.FollowUpDate.ToString("dd MMM yyyy hh:mm tt")</td>
+                                    <td><span class="badge badge-soft-primary">@f.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">No follow-ups scheduled specifically for this opportunity.</p>
+            }
+        </div>
+    </div>
+</div>

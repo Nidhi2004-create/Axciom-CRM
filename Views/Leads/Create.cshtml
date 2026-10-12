@@ -1,0 +1,129 @@
+@model AcxiomCRM.ViewModels.LeadCreateEditViewModel
+@{
+    ViewData["Title"] = "Add New Lead";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="bi bi-funnel text-primary me-2"></i>New Prospective Lead</h3>
+                <p class="text-muted small mb-0">Capture inbound or outbound prospective customer lead information.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Leads
+            </a>
+        </div>
+
+        <div class="crm-card p-4">
+            <form asp-action="Create" method="post" id="leadForm">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="LeadName" class="form-label">Contact / Lead Name <span class="text-danger">*</span></label>
+                        <input asp-for="LeadName" class="form-control" placeholder="e.g. Johnathan Smith" autofocus />
+                        <span asp-validation-for="LeadName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="CompanyName" class="form-label">Company / Organization</label>
+                        <input asp-for="CompanyName" class="form-control" placeholder="e.g. Innovate Dynamics" />
+                        <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" class="form-control" placeholder="johnathan@innovate.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input asp-for="Phone" class="form-control" placeholder="10-digit number e.g. 9811223344" maxlength="10" />
+                        </div>
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Source" class="form-label">Lead Source <span class="text-danger">*</span></label>
+                        <select asp-for="Source" class="form-select">
+                            <option value="Website">Website</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Cold Call">Cold Call</option>
+                            <option value="Campaign">Marketing Campaign</option>
+                            <option value="Partner">Partner Channel</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Source" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Status" class="form-label">Status <span class="text-danger">*</span></label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="New">New</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Qualified">Qualified</option>
+                            <option value="Unqualified">Unqualified</option>
+                            <option value="Lost">Lost</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Priority" class="form-label">Priority</label>
+                        <select asp-for="Priority" class="form-select">
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                        <span asp-validation-for="Priority" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ExpectedValue" class="form-label">Expected Deal Value (₹)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input asp-for="ExpectedValue" class="form-control" type="number" step="1000" min="0" />
+                        </div>
+                        <span asp-validation-for="ExpectedValue" class="text-danger small"></span>
+                    </div>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <div class="col-md-6">
+                            <label asp-for="AssignedTo" class="form-label">Assign Sales Executive</label>
+                            <select asp-for="AssignedTo" class="form-select" asp-items="ViewBag.UsersList">
+                                <option value="">-- Assign to User --</option>
+                            </select>
+                            <span asp-validation-for="AssignedTo" class="text-danger small"></span>
+                        </div>
+                    }
+
+                    <div class="col-12">
+                        <label asp-for="Notes" class="form-label">Notes &amp; Requirements</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Prospect background, timeline, or product interests..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                        <i class="bi bi-save me-1"></i> Save Lead
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,32 @@
+## Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build outputs
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.log
+
+## Database / local test artifacts
+*.mdf
+*.ldf
+*.db
+*.sqlite
+
+## OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+## System generated scratch
+.system_generated/
+scratch/

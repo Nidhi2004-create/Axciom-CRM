@@ -1,0 +1,87 @@
+@model AcxiomCRM.ViewModels.ConversionReportViewModel
+@{
+    ViewData["Title"] = "Sales & Conversion Report";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-trophy-fill text-success me-2"></i>Sales &amp; Conversion Analytics</h3>
+        <p class="text-muted small mb-0">Lead qualification throughput, opportunity win rates and realized revenue metrics.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="ConversionReport" asp-route-export="true" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Metrics (CSV)
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Hub</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Lead Funnel Performance -->
+    <div class="col-lg-6">
+        <div class="crm-card p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-funnel text-primary me-2"></i>Lead Funnel Conversion</h5>
+            <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 mb-3">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Lead-to-Customer Conversion Rate</span>
+                    <h2 class="fw-bold text-success mb-0">@Model.LeadConversionRate%</h2>
+                </div>
+                <div class="fs-1 text-success"><i class="bi bi-pie-chart-fill"></i></div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>Total Prospective Leads Captured</span>
+                    <span class="fw-bold">@Model.TotalLeads</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Successfully Converted to Customer</span>
+                    <span class="badge bg-success rounded-pill">@Model.ConvertedLeads</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-primary"><i class="bi bi-hourglass me-1"></i>Active In-Progress Leads</span>
+                    <span class="badge bg-primary rounded-pill">@Model.ActiveLeads</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Lost / Unqualified Leads</span>
+                    <span class="badge bg-danger rounded-pill">@Model.LostLeads</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Opportunity Outcome Performance -->
+    <div class="col-lg-6">
+        <div class="crm-card p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-briefcase text-primary me-2"></i>Opportunity Close Win Ratio</h5>
+            <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 mb-3">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Opportunity Win Rate</span>
+                    <h2 class="fw-bold text-primary mb-0">@Model.OpportunityWinRate%</h2>
+                </div>
+                <div class="fs-1 text-primary"><i class="bi bi-award-fill"></i></div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>Total Deals Created</span>
+                    <span class="fw-bold">@Model.TotalOpportunities</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-success fw-semibold"><i class="bi bi-trophy me-1"></i>Closed Won Deals</span>
+                    <span class="badge bg-success rounded-pill">@Model.WonOpportunities</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Closed Lost Deals</span>
+                    <span class="badge bg-danger rounded-pill">@Model.LostOpportunities</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span class="text-primary"><i class="bi bi-clock me-1"></i>Open Pipeline Deals</span>
+                    <span class="badge bg-primary rounded-pill">@Model.OpenOpportunities</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-light p-2 mt-2 rounded-2">
+                    <span class="fw-bold text-dark">Realized Won Contract Revenue</span>
+                    <span class="fw-bold text-success fs-5">₹@Model.WonRevenue.ToString("N0")</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

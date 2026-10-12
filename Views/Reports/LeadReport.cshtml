@@ -1,0 +1,104 @@
+@model List<AcxiomCRM.Models.Lead>
+@{
+    ViewData["Title"] = "Lead Report";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-funnel-fill text-info me-2"></i>Lead Source &amp; Conversion Report</h3>
+        <p class="text-muted small mb-0">Analysis of lead sources, status qualification, potential values and assigned representatives.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="LeadReport" asp-route-status="@ViewBag.Status" asp-route-source="@ViewBag.Source" asp-route-startDate="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : null)" asp-route-endDate="@(ViewBag.EndDate != null ? ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") : null)" asp-route-export="true" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export to CSV
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Hub</a>
+    </div>
+</div>
+
+<div class="crm-card p-3 mb-4">
+    <form method="get" asp-action="LeadReport" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Status</label>
+            <select name="status" class="form-select form-select-sm">
+                <option value="">All Statuses</option>
+                <option value="New" selected="@(ViewBag.Status == "New")">New</option>
+                <option value="Contacted" selected="@(ViewBag.Status == "Contacted")">Contacted</option>
+                <option value="Qualified" selected="@(ViewBag.Status == "Qualified")">Qualified</option>
+                <option value="Unqualified" selected="@(ViewBag.Status == "Unqualified")">Unqualified</option>
+                <option value="Converted" selected="@(ViewBag.Status == "Converted")">Converted</option>
+                <option value="Lost" selected="@(ViewBag.Status == "Lost")">Lost</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Source</label>
+            <select name="source" class="form-select form-select-sm">
+                <option value="">All Sources</option>
+                <option value="Website" selected="@(ViewBag.Source == "Website")">Website</option>
+                <option value="Referral" selected="@(ViewBag.Source == "Referral")">Referral</option>
+                <option value="Cold Call" selected="@(ViewBag.Source == "Cold Call")">Cold Call</option>
+                <option value="Campaign" selected="@(ViewBag.Source == "Campaign")">Campaign</option>
+                <option value="Partner" selected="@(ViewBag.Source == "Partner")">Partner</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small text-muted">From Date</label>
+            <input type="date" name="startDate" value="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : null)" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small text-muted">To Date</label>
+            <input type="date" name="endDate" value="@(ViewBag.EndDate != null ? ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") : null)" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-2 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-primary flex-grow-1"><i class="bi bi-funnel-fill me-1"></i>Filter</button>
+            <a asp-action="LeadReport" class="btn btn-sm btn-outline-secondary" title="Reset"><i class="bi bi-arrow-clockwise"></i></a>
+        </div>
+    </form>
+</div>
+
+<div class="crm-card overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Lead Name</th>
+                    <th>Company</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Expected Value</th>
+                    <th>Assigned To</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var l in Model)
+                {
+                    <tr>
+                        <td><span class="badge bg-light text-dark border">@l.LeadCode</span></td>
+                        <td class="fw-semibold text-primary">@l.LeadName</td>
+                        <td>@(l.CompanyName ?? "—")</td>
+                        <td><span class="badge bg-light text-secondary border">@l.Source</span></td>
+                        <td>
+                            @if (l.Status == "Converted")
+                            {
+                                <span class="badge badge-soft-success">Converted</span>
+                            }
+                            else if (l.Status == "Qualified")
+                            {
+                                <span class="badge badge-soft-primary">Qualified</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-soft-secondary">@l.Status</span>
+                            }
+                        </td>
+                        <td class="fw-semibold">₹@l.ExpectedValue.ToString("N0")</td>
+                        <td><span class="small text-secondary">@(l.AssignedToUser?.FullName ?? "Unassigned")</span></td>
+                        <td><span class="small text-muted">@l.CreatedDate.ToString("dd MMM yyyy")</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

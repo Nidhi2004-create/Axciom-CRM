@@ -1,0 +1,185 @@
+@model AcxiomCRM.ViewModels.CustomerDetailsViewModel
+@{
+    ViewData["Title"] = "Customer Profile - " + Model.Customer.CustomerName;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h3 class="fw-bold mb-0">@Model.Customer.CustomerName</h3>
+            <span class="badge bg-light text-dark border">@Model.Customer.CustomerCode</span>
+            @if (Model.Customer.Status == "Active")
+            {
+                <span class="badge badge-soft-success">Active</span>
+            }
+            else
+            {
+                <span class="badge badge-soft-secondary">Inactive</span>
+            }
+        </div>
+        <p class="text-muted small mb-0"><i class="bi bi-building me-1"></i>@(Model.Customer.CompanyName ?? "Individual Customer") &bull; Created on @Model.Customer.CreatedDate.ToString("dd MMM yyyy")</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Customer.CustomerId" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit Customer
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Customer Info Card -->
+    <div class="col-lg-4">
+        <div class="crm-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Contact Details</h5>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                <li>
+                    <span class="text-muted small d-block">Email Address</span>
+                    <a href="mailto:@Model.Customer.Email" class="text-decoration-none fw-semibold">
+                        <i class="bi bi-envelope me-1"></i>@Model.Customer.Email
+                    </a>
+                </li>
+                <li>
+                    <span class="text-muted small d-block">Phone Number</span>
+                    <span class="fw-semibold"><i class="bi bi-telephone me-1"></i>@Model.Customer.Phone</span>
+                </li>
+                <li>
+                    <span class="text-muted small d-block">Location</span>
+                    <span class="fw-semibold">
+                        <i class="bi bi-geo-alt me-1"></i>@(string.Join(", ", new[] { Model.Customer.Address, Model.Customer.City, Model.Customer.State }.Where(s => !string.IsNullOrEmpty(s))))
+                    </span>
+                </li>
+                <li>
+                    <span class="text-muted small d-block">Account Owner</span>
+                    <span class="badge badge-soft-primary px-2 py-1">
+                        <i class="bi bi-person me-1"></i>@(Model.Customer.CreatedByUser?.FullName ?? "Unassigned")
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Related Records Tabs / Columns -->
+    <div class="col-lg-8">
+        <!-- Related Opportunities -->
+        <div class="crm-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-briefcase text-primary me-2"></i>Opportunities (@Model.Opportunities.Count)</h5>
+            </div>
+            @if (Model.Opportunities.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Opportunity</th>
+                                <th>Stage</th>
+                                <th>Amount</th>
+                                <th>Probability</th>
+                                <th>Expected Close</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var opp in Model.Opportunities)
+                            {
+                                <tr>
+                                    <td class="fw-semibold text-primary">@opp.OpportunityName</td>
+                                    <td><span class="badge badge-soft-info">@opp.Stage</span></td>
+                                    <td>₹@opp.Amount.ToString("N0")</td>
+                                    <td>@opp.Probability%</td>
+                                    <td>@opp.ExpectedCloseDate.ToString("dd MMM yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">No active opportunities associated with this customer.</p>
+            }
+        </div>
+
+        <!-- Related Follow-Ups -->
+        <div class="crm-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check text-primary me-2"></i>Follow-Ups (@Model.FollowUps.Count)</h5>
+            </div>
+            @if (Model.FollowUps.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Date &amp; Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var f in Model.FollowUps)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@f.Subject</td>
+                                    <td><span class="badge bg-light text-dark border">@f.FollowUpType</span></td>
+                                    <td>@f.FollowUpDate.ToString("dd MMM yyyy hh:mm tt")</td>
+                                    <td>
+                                        @if (f.Status == "Completed")
+                                        {
+                                            <span class="badge badge-soft-success">Completed</span>
+                                        }
+                                        else if (f.Status == "Planned")
+                                        {
+                                            <span class="badge badge-soft-primary">Planned</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-soft-danger">@f.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">No follow-up tasks scheduled for this customer.</p>
+            }
+        </div>
+
+        <!-- Related Activities -->
+        <div class="crm-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-2"></i>Activities Timeline (@Model.Activities.Count)</h5>
+            </div>
+            @if (Model.Activities.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var act in Model.Activities)
+                    {
+                        <div class="d-flex gap-3 p-3 bg-light rounded-3">
+                            <div class="text-primary fs-4"><i class="bi bi-activity"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold text-dark">@act.Subject</span>
+                                    <span class="small text-muted">@act.ActivityDate.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <span class="badge badge-soft-secondary small mb-1">@act.ActivityType</span>
+                                <p class="small text-muted mb-0">@act.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">No activity logged yet.</p>
+            }
+        </div>
+    </div>
+</div>

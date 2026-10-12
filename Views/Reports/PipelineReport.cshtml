@@ -1,0 +1,80 @@
+@model List<AcxiomCRM.ViewModels.StagePipelineSummary>
+@{
+    ViewData["Title"] = "Pipeline Report";
+    var ownerSummaries = ViewBag.OwnerSummaries as List<AcxiomCRM.ViewModels.OwnerPipelineSummary> ?? new List<AcxiomCRM.ViewModels.OwnerPipelineSummary>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-layers-fill text-primary me-2"></i>Sales Pipeline Report</h3>
+        <p class="text-muted small mb-0">Stage-wise and representative-wise active pipeline volumes and weighted calculations.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="PipelineReport" asp-route-export="true" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Stage Data (CSV)
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Hub</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Stage Breakdown -->
+    <div class="col-lg-6">
+        <div class="crm-card p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-funnel text-primary me-2"></i>Stage-Wise Pipeline Volume</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Pipeline Stage</th>
+                            <th>Deals</th>
+                            <th>Total Amount</th>
+                            <th>Weighted Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model)
+                        {
+                            <tr>
+                                <td><span class="badge badge-soft-primary px-2 py-1">@s.Stage</span></td>
+                                <td class="fw-semibold">@s.DealCount</td>
+                                <td class="fw-bold text-dark">₹@s.TotalAmount.ToString("N0")</td>
+                                <td class="fw-semibold text-success">₹@s.WeightedAmount.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner Breakdown -->
+    <div class="col-lg-6">
+        <div class="crm-card p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-person-badge text-primary me-2"></i>Owner-Wise Pipeline Volume</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sales Representative</th>
+                            <th>Deals</th>
+                            <th>Total Amount</th>
+                            <th>Weighted Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in ownerSummaries)
+                        {
+                            <tr>
+                                <td class="fw-semibold text-dark">@o.OwnerName</td>
+                                <td>@o.DealCount</td>
+                                <td class="fw-bold text-dark">₹@o.TotalAmount.ToString("N0")</td>
+                                <td class="fw-semibold text-success">₹@o.WeightedAmount.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

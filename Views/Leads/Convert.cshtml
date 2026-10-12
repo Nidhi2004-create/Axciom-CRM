@@ -1,0 +1,121 @@
+@model AcxiomCRM.ViewModels.ConvertLeadViewModel
+@{
+    ViewData["Title"] = "Convert Lead - " + Model.LeadCode;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h3 class="fw-bold mb-1"><i class="bi bi-arrow-repeat text-success me-2"></i>Convert Lead to Customer</h3>
+                <p class="text-muted small mb-0">Transform qualified lead <strong>@Model.LeadCode</strong> into a customer and active pipeline opportunity.</p>
+            </div>
+            <a asp-action="Details" asp-route-id="@Model.LeadId" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Cancel
+            </a>
+        </div>
+
+        <div class="crm-card p-4">
+            <form asp-action="Convert" asp-route-id="@Model.LeadId" method="post" id="convertLeadForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="LeadId" />
+                <input type="hidden" asp-for="LeadCode" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                <!-- Section 1: Customer Details -->
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                    <i class="bi bi-person-badge me-2"></i>1. Customer Information
+                </h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="CustomerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                        <input asp-for="CustomerName" class="form-control" />
+                        <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CompanyName" class="form-label">Company Name</label>
+                        <input asp-for="CompanyName" class="form-control" />
+                        <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input asp-for="Phone" class="form-control" maxlength="10" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="City" class="form-label">City</label>
+                        <input asp-for="City" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="State" class="form-label">State</label>
+                        <input asp-for="State" class="form-control" />
+                    </div>
+                </div>
+
+                <!-- Section 2: Opportunity Details -->
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                    <i class="bi bi-briefcase me-2"></i>2. Deal &amp; Opportunity Creation
+                </h5>
+
+                <div class="form-check form-switch mb-3">
+                    <input asp-for="CreateOpportunity" class="form-check-input" id="createOppSwitch" />
+                    <label asp-for="CreateOpportunity" class="form-check-label fw-semibold">Generate an Opportunity from this lead</label>
+                </div>
+
+                <div id="oppSection" class="row g-3 p-3 bg-light rounded-3 mb-4">
+                    <div class="col-md-12">
+                        <label asp-for="OpportunityName" class="form-label">Opportunity Name</label>
+                        <input asp-for="OpportunityName" class="form-control" placeholder="e.g. Acme Corp Enterprise License" />
+                        <span asp-validation-for="OpportunityName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="OpportunityAmount" class="form-label">Deal Amount (₹) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input asp-for="OpportunityAmount" class="form-control" type="number" step="1000" min="0.01" />
+                        </div>
+                        <span asp-validation-for="OpportunityAmount" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="OpportunityProbability" class="form-label">Probability (%)</label>
+                        <div class="input-group">
+                            <input asp-for="OpportunityProbability" class="form-control" type="number" min="0" max="100" />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <span asp-validation-for="OpportunityProbability" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ExpectedCloseDate" class="form-label">Expected Close Date</label>
+                        <input asp-for="ExpectedCloseDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="ExpectedCloseDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Details" asp-route-id="@Model.LeadId" class="btn btn-light px-4">Cancel</a>
+                    <button type="submit" class="btn btn-success px-4 shadow-sm">
+                        <i class="bi bi-check-circle-fill me-1"></i> Convert to Customer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const switchEl = document.getElementById('createOppSwitch');
+        const oppSec = document.getElementById('oppSection');
+        if (switchEl && oppSec) {
+            switchEl.addEventListener('change', function() {
+                oppSec.style.display = this.checked ? 'flex' : 'none';
+            });
+        }
+    </script>
+}
